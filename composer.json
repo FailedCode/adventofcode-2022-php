@@ -1,0 +1,10 @@
+{
+    "name": "failedcode/aoc2022",
+    "description": "Advent of code 2022 solutions in PHP 8",
+    "autoload": {
+        "psr-4": {
+            "Failedcode\\Aoc2022\\": "src/"
+        }
+    },
+    "require": {}
+}
