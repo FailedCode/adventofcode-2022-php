@@ -6,9 +6,37 @@ class Day7 extends AbstractDay
 {
     public function solve_part_1(): string
     {
+        $dirSizes = $this->getDirSizes();
+        $totalSize = 0;
+        $maxSize = 100000;
+        foreach ($dirSizes as $dir => $size) {
+            if ($size <= $maxSize) {
+                $totalSize += $size;
+            }
+        }
+        return $totalSize;
+    }
+
+    public function solve_part_2(): string
+    {
+        $dirSizes = $this->getDirSizes();
+        $totalSize = $smallestDirSize = 70000000;
+        $neededFreeSize = 30000000;
+        $currentUsedSize = $dirSizes['/'];
+        foreach ($dirSizes as $dir => $size) {
+            if ($totalSize - $currentUsedSize + $size >= $neededFreeSize) {
+                if ($size < $smallestDirSize) {
+                    $smallestDirSize = $size;
+                }
+            }
+        }
+        return $smallestDirSize;
+    }
+
+    protected function getDirSizes()
+    {
         $filesystem = $this->getFilesystem();
         $dirSizes = [];
-        $totalSize = 0;
         foreach ($filesystem as $path => $size) {
             if (str_ends_with($path, '/')) {
                 continue;
@@ -24,22 +52,8 @@ class Day7 extends AbstractDay
                     break;
                 }
             }
-
         }
-
-        $maxSize = 100000;
-        foreach ($dirSizes as $dir => $size) {
-            if ($size <= $maxSize) {
-                $totalSize += $size;
-            }
-        }
-
-        return $totalSize;
-    }
-
-    public function solve_part_2(): string
-    {
-        return "TODO";
+        return $dirSizes;
     }
 
     protected function getFilesystem()
