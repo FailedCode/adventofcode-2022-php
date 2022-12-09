@@ -82,4 +82,24 @@ class Utils
             }
         }
     }
+
+    /**
+     * @param int $day
+     * @return void
+     */
+    public function createDayFromTemplate($day)
+    {
+        $templateFile = __dir__ . '/Days/DayTemplate.php';
+        $classReplace = "Day{$day}";
+        $classFind = basename($templateFile, '.php');
+        $destinationFilepath = dirname($templateFile) . "/$classReplace.php";
+
+        if (file_exists($destinationFilepath)) {
+            return;
+        }
+
+        $content = file_get_contents($templateFile);
+        $content = str_replace([$classFind, '$DAY'], [$classReplace, $day], $content);
+        file_put_contents($destinationFilepath, $content);
+    }
 }
