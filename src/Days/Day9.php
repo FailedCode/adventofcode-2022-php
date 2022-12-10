@@ -10,9 +10,9 @@ class Day9 extends AbstractDay
         $headX = $headY = 0;
         $tailX = $tailY = 0;
         $tailPositions = [];
+        $tailPositions["{$tailX}|{$tailY}"] = true;
         foreach ($moves as $move) {
             list($x, $y) = $move;
-            $tailPositions["{$tailX}|{$tailY}"] = true;
             $headX += $x;
             $headY += $y;
 
@@ -37,7 +37,41 @@ class Day9 extends AbstractDay
 
     public function solve_part_2(): string
     {
-        return "TODO";
+        $X = 0;
+        $Y = 1;
+        $moves = $this->getMoves();
+        $knotCount = 10;
+        $knots = $this->fillArray($knotCount);
+        $tailPositions = [];
+        $tailPositions["0|0"] = true;
+        foreach ($moves as $move) {
+            list($x, $y) = $move;
+
+            $knots[0][$X] += $x;
+            $knots[0][$Y] += $y;
+            for ($i = 1; $i < $knotCount; $i += 1) {
+                if ($this->inRange($knots[$i-1][$X], $knots[$i-1][$Y], $knots[$i][$X], $knots[$i][$Y])) {
+                    break;
+                } else {
+                    $xdiff = $knots[$i-1][$X] - $knots[$i][$X];
+                    $ydiff = $knots[$i-1][$Y] - $knots[$i][$Y];
+                    if ($knots[$i-1][$X] != $knots[$i][$X] && $knots[$i-1][$Y] != $knots[$i][$Y]) {
+                        // diagonal
+                        $knots[$i][$X] += $this->sign($xdiff);
+                        $knots[$i][$Y] += $this->sign($ydiff);
+                    } elseif (abs($xdiff) > abs($ydiff)) {
+                        $knots[$i][$X] += $this->sign($xdiff);
+                    } elseif (abs($ydiff) > abs($xdiff)) {
+                        $knots[$i][$Y] += $this->sign($ydiff);
+                    }
+                    if ($i === $knotCount-1) {
+                        $tailPositions["{$knots[$i][$X]}|{$knots[$i][$Y]}"] = true;
+                    }
+                }
+            }
+
+        }
+        return count($tailPositions);
     }
 
     protected function sign($n)
@@ -49,6 +83,15 @@ class Day9 extends AbstractDay
             return -1;
         }
         return 0;
+    }
+
+    protected function fillArray($n)
+    {
+        $result = [];
+        for ($i = 0; $i < $n; $i += 1) {
+            $result[] = [0, 0];
+        }
+        return $result;
     }
 
     protected function inRange($x1, $y1, $x2, $y2)
