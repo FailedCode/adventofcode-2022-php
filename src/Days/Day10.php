@@ -28,7 +28,34 @@ class Day10 extends AbstractDay
 
     public function solve_part_2(): string
     {
-        return "TODO";
+        $width = 40;
+        $height = 6;
+        $changes = $this->getRegisterChanges();
+        $screen = array_fill(0, $width*$height, ' ');
+        $x = $cycle = 1;
+        foreach ($changes as $change) {
+            if ($this->isInRange( ($cycle % $width)-1, $x-1, $x+1)) {
+                $screen[$cycle-1] = '▓';
+            }
+            $x += $change;
+            $cycle += 1;
+        }
+        echo "\n";
+        for ($y = 0; $y < $height; $y += 1) {
+            $line = implode('', array_slice($screen, $y*$width, $width-1));
+            echo " {$y} {$line}\n";
+        }
+        echo "   ";
+        for ($x = 0; $x < $width; $x += 1) {
+            echo $x % 10;
+        }
+        echo "\n\n";
+        return "TODO: OCR";
+    }
+
+    protected function isInRange($x, $start, $end)
+    {
+        return $x >= $start && $x <= $end;
     }
 
     protected function getRegisterChanges()
