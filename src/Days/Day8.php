@@ -84,7 +84,73 @@ class Day8 extends AbstractDay
 
     public function solve_part_2(): string
     {
-        return "TODO";
+        $trees = $this->getTreeGrid();
+        $highestScore = 0;
+        $height = count($trees);
+        $width = count($trees[0]);
+
+        for ($x = 1; $x < $width - 1; $x += 1) {
+            for ($y = 1; $y < $height - 1; $y += 1) {
+                $highestScore = max($highestScore, $this->calcScore($trees, $x, $y, $width, $height));
+            }
+        }
+
+        return $highestScore;
+    }
+
+    protected function calcScore($trees, $startx, $starty, $width, $height)
+    {
+        $treeHeight = $trees[$starty][$startx];
+
+        // right
+        $scoreRight = 0;
+        for ($x = $startx + 1; $x < $width; $x += 1) {
+            if ($trees[$starty][$x] < $treeHeight) {
+                $scoreRight += 1;
+            }
+            if ($trees[$starty][$x] >= $treeHeight) {
+                $scoreRight += 1;
+                break;
+            }
+        }
+
+        // left
+        $scoreLeft = 0;
+        for ($x = $startx - 1; $x >= 0; $x -= 1) {
+            if ($trees[$starty][$x] < $treeHeight) {
+                $scoreLeft += 1;
+            }
+            if ($trees[$starty][$x] >= $treeHeight) {
+                $scoreLeft += 1;
+                break;
+            }
+        }
+
+        // down
+        $scoreDown = 0;
+        for ($y = $starty + 1; $y < $height; $y += 1) {
+            if ($trees[$y][$startx] < $treeHeight) {
+                $scoreDown += 1;
+            }
+            if ($trees[$y][$startx] >= $treeHeight) {
+                $scoreDown += 1;
+                break;
+            }
+        }
+
+        // up
+        $scoreUp = 0;
+        for ($y = $starty - 1; $y >= 0; $y -= 1) {
+            if ($trees[$y][$startx] < $treeHeight) {
+                $scoreUp += 1;
+            }
+            if ($trees[$y][$startx] >= $treeHeight) {
+                $scoreUp += 1;
+                break;
+            }
+        }
+
+        return $scoreRight * $scoreLeft * $scoreDown * $scoreUp;
     }
 
     protected function getTreeGrid()
