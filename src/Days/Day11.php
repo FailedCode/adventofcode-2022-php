@@ -13,7 +13,7 @@ class Day11 extends AbstractDay
         for ($i = 0; $i < $rounds; $i += 1) {
             /** @var Monkey $monkey */
             foreach ($monkeys as $monkey) {
-                $monkey->calculateTurn($monkeys);
+                $monkey->calculateTurn($monkeys, true);
             }
         }
         uasort($monkeys, function ($a, $b) {
@@ -27,7 +27,21 @@ class Day11 extends AbstractDay
 
     public function solve_part_2(): string
     {
-        return "TODO";
+        $monkeys = $this->loadMonkeys();
+        $rounds = 10000;
+        for ($i = 0; $i < $rounds; $i += 1) {
+            /** @var Monkey $monkey */
+            foreach ($monkeys as $monkey) {
+                $monkey->calculateTurn($monkeys,false);
+            }
+        }
+        uasort($monkeys, function ($a, $b) {
+            return $a->getInspections() - $b->getInspections();
+        });
+
+        $monkeyFirst = array_pop($monkeys);
+        $monkeySecond = array_pop($monkeys);
+        return $monkeyFirst->getInspections() * $monkeySecond->getInspections();
     }
 
     protected function loadMonkeys()

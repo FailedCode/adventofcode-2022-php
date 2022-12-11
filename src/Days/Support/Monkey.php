@@ -17,6 +17,7 @@ class Monkey
     protected int $ifTrueMonkey = 0;
     protected int $ifFalseMonkey = 0;
     protected int $inspections = 0;
+    protected int $commonDivisor = 1;
 
     public function __construct(array $data)
     {
@@ -49,7 +50,7 @@ class Monkey
         echo "Monkey {$this->nr}: {$this->inspections}\n";
     }
 
-    public function calculateTurn($monkeyList)
+    public function calculateTurn($monkeyList, $dontWorryBeHappy)
     {
         $itemCount = count($this->items);
         for ($i = 0; $i < $itemCount; $i += 1) {
@@ -67,7 +68,16 @@ class Monkey
                     echo "\nUNKNOWN OPERATOR '{$this->operationType}'\n";
                     exit(0);
             }
-            $item = (int)($item / self::WORRY_DIV);
+            if ($dontWorryBeHappy) {
+                $item = (int)($item / self::WORRY_DIV);
+            } else {
+                if ($this->commonDivisor === 1) {
+                    foreach ($monkeyList as $monkey) {
+                        $this->commonDivisor *= $monkey->getDivisionTestValue();
+                    }
+                }
+                $item = (int)($item % $this->commonDivisor);
+            }
             if ($item % $this->divisionTestValue == 0) {
                 $monkeyList[$this->ifTrueMonkey]->receiveItem($item);
             } else {
@@ -84,5 +94,10 @@ class Monkey
     public function getInspections(): int
     {
         return $this->inspections;
+    }
+
+    public function getDivisionTestValue(): int
+    {
+        return $this->divisionTestValue;
     }
 }
